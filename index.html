@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AWS CSA Professional Practice Test — index.html — v202606151645 -->
+<!-- AWS CSA Professional Practice Test — index.html — v202606151649 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -21,7 +21,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <!-- Question bank -->
-<script src="sap-c02-question-bank.js?v=202606151645"></script>
+<script src="sap-c02-question-bank.js?v=202606151649"></script>
 
 <style>
   :root {
@@ -352,6 +352,17 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .hidden { display: none !important; }
 
+  /* Content protection: discourage selection/copying of question content */
+  .qcard, .qtext, .opts, .opt, .prior-wrong, .ritem, .rq, .ropt, .explain,
+  .card, .qmeta {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  /* Allow selection inside form inputs (email/password) */
+  input, textarea { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+
   .toast {
     position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
     background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 10px;
@@ -485,8 +496,41 @@
    ========================================================================== */
 
 // ── version (bump on every index.html change for cache busting) ──
-const APP_VERSION = "v202606151645";
+const APP_VERSION = "v202606151649";
 console.log('%c[aws-csa-pro-practice / index.html] ✅ ' + APP_VERSION + ' — loaded from GitHub Pages', 'color:#1a6eb5;font-weight:bold;');
+
+/* ── Content protection ──────────────────────────────────────────────────── *
+   Client-side deterrents against casually downloading the page or copying the
+   questions. These cannot stop a determined user with developer tools, but they
+   block right-click save, copy/cut, drag, and common save/print shortcuts.      */
+(function setupContentProtection(){
+  // Block right-click context menu
+  document.addEventListener('contextmenu', e=> e.preventDefault());
+
+  // Block copy / cut on content (allow inside input fields)
+  function inField(t){ return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA'); }
+  ['copy','cut'].forEach(evt=>{
+    document.addEventListener(evt, e=>{
+      if (!inField(e.target)){ e.preventDefault(); }
+    });
+  });
+
+  // Block dragging of content (e.g., dragging text out)
+  document.addEventListener('dragstart', e=>{ if(!inField(e.target)) e.preventDefault(); });
+
+  // Block common save/print/view-source/devtools shortcuts
+  document.addEventListener('keydown', e=>{
+    const k = (e.key || '').toLowerCase();
+    const ctrl = e.ctrlKey || e.metaKey;
+    // Ctrl/Cmd + S (save), P (print), U (view source)
+    if (ctrl && ['s','p','u'].includes(k)){ e.preventDefault(); return false; }
+    // Ctrl/Cmd + C / X when not in a field
+    if (ctrl && ['c','x'].includes(k) && !inField(e.target)){ e.preventDefault(); return false; }
+    // F12 and Ctrl/Cmd+Shift+I/J/C (devtools)
+    if (k === 'f12'){ e.preventDefault(); return false; }
+    if (ctrl && e.shiftKey && ['i','j','c'].includes(k)){ e.preventDefault(); return false; }
+  });
+})();
 
 /* --- Firebase config (sfcertification-grafana, same as SF Knowledge Hub) --- */
 const firebaseConfig = {
