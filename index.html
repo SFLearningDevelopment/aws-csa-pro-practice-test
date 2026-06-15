@@ -1,8 +1,14 @@
 <!DOCTYPE html>
+<!-- AWS CSA Professional Practice Test — index.html — v202606151645 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<meta http-equiv="Cross-Origin-Opener-Policy" content="unsafe-none">
+<meta http-equiv="Cross-Origin-Embedder-Policy" content="unsafe-none">
 <title>AWS CSA Professional — Practice Test</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +21,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <!-- Question bank -->
-<script src="sap-c02-question-bank.js"></script>
+<script src="sap-c02-question-bank.js?v=202606151645"></script>
 
 <style>
   :root {
@@ -363,7 +369,7 @@
       <div class="mark">SF</div>
       <div>
         <h1>AWS CSA Professional — Practice Test</h1>
-        <p>SAP-C02 · SourceFuse Learning &amp; Development</p>
+        <p>SAP-C02 · SourceFuse Learning &amp; Development · <span id="versionTag"></span></p>
       </div>
     </div>
     <div class="userchip" id="userchip" style="display:none">
@@ -477,6 +483,10 @@
    AWS CSA Professional Practice Test — app logic
    Firestore collection: "AWS CSA Pro Practice Test"
    ========================================================================== */
+
+// ── version (bump on every index.html change for cache busting) ──
+const APP_VERSION = "v202606151645";
+console.log('%c[aws-csa-pro-practice / index.html] ✅ ' + APP_VERSION + ' — loaded from GitHub Pages', 'color:#1a6eb5;font-weight:bold;');
 
 /* --- Firebase config (sfcertification-grafana, same as SF Knowledge Hub) --- */
 const firebaseConfig = {
@@ -1096,6 +1106,8 @@ window.addEventListener('beforeunload', (e)=>{
 });
 
 /* --- Init --- */
+const _vt = document.getElementById('versionTag');
+if (_vt) _vt.textContent = APP_VERSION;
 renderCards();
 show('view-dashboard');
 </script>
