@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AWS CSA Professional — Practice Test</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Firebase (compat SDK, consistent with SF Knowledge Hub) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Question bank -->
+<script src="sap-c02-question-bank.js"></script>
+
+<style>
+  :root {
+    --blue: #1a6eb5;
+    --blue-dark: #14568d;
+    --blue-light: #e8f1fb;
+    --ink: #1f2933;
+    --muted: #5b6b7b;
+    --line: #d8e2ee;
+    --bg: #f5f8fc;
+    --white: #ffffff;
+    --green: #1e8e5a;
+    --green-light: #e4f4ec;
+    --red: #c0392b;
+    --red-light: #fbeae8;
+    --amber: #b9770e;
+    --amber-light: #fcf3e2;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(20,60,110,.08), 0 6px 20px rgba(20,60,110,.06);
+    --font-body: 'Merriweather Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --font-mono: 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--blue); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* Header */
+  header.app {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 30;
+  }
+  header.app .bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; max-width: 1080px; margin: 0 auto;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .mark {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff; display: grid; place-items: center;
+    font-weight: 800; font-size: 13px; letter-spacing: .5px;
+  }
+  .brand h1 { font-size: 15px; margin: 0; font-weight: 700; }
+  .brand p { margin: 0; font-size: 12px; color: var(--muted); }
+  .userchip {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--muted);
+  }
+  .userchip .email { color: var(--ink); font-weight: 600; }
+  .btn-link {
+    background: none; border: none; color: var(--blue);
+    font: inherit; cursor: pointer; font-size: 13px; font-weight: 600;
+    padding: 0;
+  }
+  .btn-link:hover { text-decoration: underline; }
+
+  /* Buttons */
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 14px;
+    border-radius: 9px; padding: 11px 18px; cursor: pointer;
+    border: 1px solid transparent; transition: background .15s, border-color .15s, transform .05s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-primary:disabled { background: #9bb8d4; cursor: not-allowed; }
+  .btn-ghost { background: var(--white); color: var(--blue); border-color: var(--line); }
+  .btn-ghost:hover { background: var(--blue-light); }
+  .btn-subtle { background: var(--blue-light); color: var(--blue-dark); }
+  .btn-subtle:hover { background: #d8e9fb; }
+
+  /* Views */
+  .view { padding: 32px 0 64px; }
+  .view-intro { margin-bottom: 24px; }
+  .view-intro .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--blue); font-weight: 600;
+  }
+  .view-intro h2 { font-size: 27px; margin: 6px 0 8px; font-weight: 800; }
+  .view-intro p { margin: 0; color: var(--muted); max-width: 640px; }
+
+  /* Domain cards */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  @media (max-width: 720px){ .cards { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 22px; display: flex; flex-direction: column; gap: 14px;
+    cursor: pointer; transition: transform .12s, box-shadow .12s, border-color .12s;
+    position: relative; overflow: hidden;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(20,60,110,.12); border-color: var(--blue); }
+  .card .dnum {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    color: var(--blue); letter-spacing: 1px;
+  }
+  .card h3 { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.3; }
+  .card .topics { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
+  .card .topics li { font-size: 13px; color: var(--muted); padding-left: 16px; position: relative; }
+  .card .topics li::before { content: '›'; position: absolute; left: 0; color: var(--blue); font-weight: 700; }
+  .card .foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 6px; }
+  .card .meta { font-size: 12px; color: var(--muted); }
+  .card .weight {
+    font-family: var(--font-mono); font-size: 11px; color: var(--blue-dark);
+    background: var(--blue-light); padding: 3px 8px; border-radius: 20px; font-weight: 600;
+  }
+  .card .go { font-size: 13px; font-weight: 700; color: var(--blue); }
+
+  .note {
+    margin-top: 26px; font-size: 13px; color: var(--muted);
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .note b { color: var(--ink); }
+
+  /* Modal (auth) */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(15,35,60,.55);
+    display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: 16px; width: 100%; max-width: 400px;
+    box-shadow: 0 20px 60px rgba(10,30,60,.3); overflow: hidden;
+  }
+  .modal .mhead {
+    padding: 22px 24px 0; text-align: center;
+  }
+  .modal .mhead .mmark {
+    width: 46px; height: 46px; border-radius: 11px; margin: 0 auto 12px;
+    background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+    color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 15px;
+  }
+  .modal h3 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+  .modal .msub { margin: 0; font-size: 13px; color: var(--muted); }
+  .modal .mbody { padding: 20px 24px 24px; }
+  .gbtn {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    border: 1px solid var(--line); background: var(--white); color: var(--ink);
+    border-radius: 9px; padding: 11px; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
+  .gbtn:hover { background: #f6f9fd; }
+  .gbtn svg { width: 18px; height: 18px; }
+  .divider { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 12px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+  .field input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line);
+    border-radius: 8px; font: inherit; font-size: 14px; color: var(--ink);
+  }
+  .field input:focus { outline: 2px solid var(--blue-light); border-color: var(--blue); }
+  .auth-error {
+    display: none; background: var(--red-light); color: var(--red);
+    border-radius: 8px; padding: 9px 12px; font-size: 13px; margin-bottom: 12px;
+  }
+  .modal .mclose {
+    position: absolute; top: 14px; right: 16px; background: none; border: none;
+    font-size: 22px; color: var(--muted); cursor: pointer; line-height: 1;
+  }
+  .modal { position: relative; }
+
+  /* Test view */
+  .test-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .test-top .tinfo .eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--blue); font-weight: 600;
+  }
+  .test-top .tinfo h2 { margin: 4px 0 0; font-size: 19px; font-weight: 700; }
+  .timer {
+    font-family: var(--font-mono); font-size: 20px; font-weight: 600;
+    background: var(--white); border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 16px; color: var(--ink); min-width: 108px; text-align: center;
+  }
+  .timer.warn { color: var(--amber); border-color: var(--amber); background: var(--amber-light); }
+  .timer.crit { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+  .progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .progress-bar { flex: 1; height: 8px; background: var(--line); border-radius: 20px; overflow: hidden; }
+  .progress-bar i { display: block; height: 100%; background: var(--blue); width: 0; transition: width .2s; }
+  .progress-label { font-size: 13px; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+
+  .qcard {
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 26px;
+  }
+  .qcard .qmeta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .qcard .qnum { font-family: var(--font-mono); font-size: 12px; color: var(--blue); font-weight: 600; }
+  .chip {
+    font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px;
+    font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .5px;
+  }
+  .chip.topic { background: var(--blue-light); color: var(--blue-dark); text-transform: none; letter-spacing: 0; font-family: var(--font-body); }
+  .chip.multi { background: var(--amber-light); color: var(--amber); }
+  .chip.diff-easy { background: var(--green-light); color: var(--green); }
+  .chip.diff-medium { background: var(--blue-light); color: var(--blue-dark); }
+  .chip.diff-hard { background: var(--red-light); color: var(--red); }
+  .qtext { font-size: 16.5px; font-weight: 600; line-height: 1.55; margin-bottom: 18px; }
+  .qhint { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; }
+  .prior-wrong {
+    background: var(--amber-light); border: 1px solid #f0d9a8; border-left: 4px solid var(--amber);
+    border-radius: 9px; padding: 12px 14px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5;
+  }
+  .prior-wrong .pw-head { font-weight: 700; color: var(--amber); margin-bottom: 4px; }
+  .prior-wrong .pw-body { color: var(--ink); }
+  .prior-wrong .pw-label { font-weight: 600; color: var(--muted); }
+  .prior-wrong b { color: var(--ink); }
+
+  .opts { display: flex; flex-direction: column; gap: 11px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px 15px;
+    cursor: pointer; transition: border-color .12s, background .12s;
+  }
+  .opt:hover { border-color: var(--blue); background: var(--blue-light); }
+  .opt.selected { border-color: var(--blue); background: var(--blue-light); }
+  .opt .box {
+    width: 20px; height: 20px; flex: 0 0 20px; border: 2px solid var(--line);
+    display: grid; place-items: center; margin-top: 1px; color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .opt.kind-single .box { border-radius: 50%; }
+  .opt.kind-multi .box { border-radius: 5px; }
+  .opt.selected .box { background: var(--blue); border-color: var(--blue); }
+  .opt .otext { font-size: 14.5px; line-height: 1.5; }
+  .opt .oletter { font-weight: 700; color: var(--blue); margin-right: 4px; }
+
+  .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; }
+  .nav-row .left, .nav-row .right { display: flex; gap: 10px; }
+
+  /* Question palette */
+  .palette {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 8px; margin-top: 22px; background: var(--white); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px;
+  }
+  .palette button {
+    aspect-ratio: 1; border: 1px solid var(--line); background: var(--white);
+    border-radius: 8px; font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; transition: all .12s;
+  }
+  .palette button:hover { border-color: var(--blue); }
+  .palette button.answered { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .palette button.current { outline: 2px solid var(--blue); outline-offset: 1px; }
+  .palette-legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--muted); }
+  .palette-legend span { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line); display: inline-block; }
+  .swatch.answered { background: var(--blue); border-color: var(--blue); }
+
+  /* Results */
+  .score-hero {
+    background: var(--white); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 30px; display: flex; gap: 28px; align-items: center; flex-wrap: wrap;
+  }
+  .ring { position: relative; width: 132px; height: 132px; flex: 0 0 132px; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .rcenter {
+    position: absolute; inset: 0; display: grid; place-content: center; text-align: center;
+  }
+  .ring .rcenter .pct { font-size: 30px; font-weight: 800; font-family: var(--font-mono); }
+  .ring .rcenter .lab { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .score-meta { flex: 1; min-width: 240px; }
+  .score-meta h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; }
+  .verdict { display: inline-block; font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .verdict.pass { background: var(--green-light); color: var(--green); }
+  .verdict.fail { background: var(--red-light); color: var(--red); }
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 6px; }
+  @media (max-width: 560px){ .stat-grid { grid-template-columns: repeat(2,1fr); } }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat .v { font-size: 20px; font-weight: 800; font-family: var(--font-mono); }
+  .stat .l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .stat.correct .v { color: var(--green); }
+  .stat.wrong .v { color: var(--red); }
+
+  .review-head { margin: 32px 0 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .review-head h3 { margin: 0; font-size: 18px; font-weight: 700; }
+  .filter-tabs { display: flex; gap: 6px; }
+  .filter-tabs button {
+    border: 1px solid var(--line); background: var(--white); border-radius: 8px;
+    padding: 6px 12px; font: inherit; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer;
+  }
+  .filter-tabs button.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  .ritem {
+    background: var(--white); border: 1px solid var(--line); border-left-width: 4px;
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 14px;
+  }
+  .ritem.correct { border-left-color: var(--green); }
+  .ritem.wrong { border-left-color: var(--red); }
+  .ritem .rtop { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .ritem .rnum { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--muted); }
+  .ritem .rstatus { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
+  .ritem .rstatus.correct { background: var(--green-light); color: var(--green); }
+  .ritem .rstatus.wrong { background: var(--red-light); color: var(--red); }
+  .ritem .rq { font-size: 15px; font-weight: 600; margin-bottom: 12px; line-height: 1.5; }
+  .ropt { display: flex; align-items: flex-start; gap: 9px; padding: 8px 11px; border-radius: 8px; font-size: 14px; margin-bottom: 6px; line-height: 1.45; }
+  .ropt .tag { font-size: 11px; font-weight: 700; font-family: var(--font-mono); padding: 1px 7px; border-radius: 5px; white-space: nowrap; margin-top: 1px; }
+  .ropt.correct { background: var(--green-light); }
+  .ropt.correct .tag { background: var(--green); color: #fff; }
+  .ropt.picked-wrong { background: var(--red-light); }
+  .ropt.picked-wrong .tag { background: var(--red); color: #fff; }
+  .ropt.neutral { color: var(--muted); }
+  .ropt .oletter { font-weight: 700; margin-right: 3px; }
+  .explain {
+    margin-top: 10px; font-size: 13.5px; color: var(--ink); background: var(--blue-light);
+    border-radius: 8px; padding: 11px 13px; line-height: 1.5;
+  }
+  .explain b { color: var(--blue-dark); }
+
+  /* Loading / states */
+  .loading { text-align: center; padding: 70px 20px; color: var(--muted); }
+  .spinner {
+    width: 34px; height: 34px; border: 3px solid var(--line); border-top-color: var(--blue);
+    border-radius: 50%; margin: 0 auto 16px; animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
+
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.2); z-index: 200;
+    opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="bar">
+    <div class="brand">
+      <div class="mark">SF</div>
+      <div>
+        <h1>AWS CSA Professional — Practice Test</h1>
+        <p>SAP-C02 · SourceFuse Learning &amp; Development</p>
+      </div>
+    </div>
+    <div class="userchip" id="userchip" style="display:none">
+      <span>Signed in as <span class="email" id="userEmail"></span></span>
+      <button class="btn-link" id="signoutBtn">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- DASHBOARD VIEW -->
+  <section class="view" id="view-dashboard">
+    <div class="view-intro">
+      <div class="eyebrow">Choose a domain</div>
+      <h2>Practice by exam domain</h2>
+      <p>Each attempt draws 25 questions at random from the domain's pool. You have 45 minutes per attempt, and you can move back and forth before submitting. Repeat attempts avoid questions you've already seen until the pool is used up.</p>
+    </div>
+    <div class="cards" id="domainCards"></div>
+    <div class="note">
+      <span>ℹ️</span>
+      <div><b>How attempts work:</b> Sign in when you start a domain specific test. Your previously served questions are tracked per domain, so attempts 1–2 are drawn to be unique. Beyond 2 attempts, questions may repeat and be interspersed with questions you previously answered incorrectly.<br><br><b>Happy Learning!</b></div>
+    </div>
+  </section>
+
+  <!-- TEST VIEW -->
+  <section class="view hidden" id="view-test">
+    <div class="test-top">
+      <div class="tinfo">
+        <div class="eyebrow" id="testEyebrow">Domain</div>
+        <h2 id="testTitle">Domain</h2>
+      </div>
+      <div class="timer" id="timer">45:00</div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-bar"><i id="progressFill"></i></div>
+      <div class="progress-label" id="progressLabel">0 / 25 answered</div>
+    </div>
+
+    <div class="qcard" id="qcard"><!-- question rendered here --></div>
+
+    <div class="nav-row">
+      <div class="left">
+        <button class="btn btn-ghost" id="prevBtn">← Previous</button>
+      </div>
+      <div class="right">
+        <button class="btn btn-ghost" id="nextBtn">Next →</button>
+        <button class="btn btn-primary" id="submitBtn">Submit test</button>
+      </div>
+    </div>
+
+    <div class="palette" id="palette"></div>
+    <div class="palette-legend">
+      <span><i class="swatch answered"></i> Answered</span>
+      <span><i class="swatch"></i> Not answered</span>
+    </div>
+  </section>
+
+  <!-- RESULTS VIEW -->
+  <section class="view hidden" id="view-results">
+    <!-- rendered dynamically -->
+  </section>
+
+  <!-- LOADING VIEW -->
+  <section class="view hidden" id="view-loading">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div id="loadingText">Preparing your test…</div>
+    </div>
+  </section>
+</main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="mclose" id="authClose" aria-label="Close">×</button>
+    <div class="mhead">
+      <div class="mmark">SF</div>
+      <h3>Sign in to continue</h3>
+      <p class="msub" id="authSub">Sign in to start your practice test</p>
+    </div>
+    <div class="mbody">
+      <div class="auth-error" id="authError"></div>
+      <button class="gbtn" id="googleBtn">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+          <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+          <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24s.85 6.91 2.34 9.88l7.35-5.7z"/>
+          <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+        </svg>
+        Sign in with Google
+      </button>
+      <div class="divider">Or sign in with email</div>
+      <div class="field">
+        <label for="emailIn">Email</label>
+        <input type="email" id="emailIn" placeholder="name@sourcefuse.com" autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="pwIn">Password</label>
+        <input type="password" id="pwIn" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button class="btn btn-primary" id="emailBtn" style="width:100%; margin-top:4px;">Sign in</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================================
+   AWS CSA Professional Practice Test — app logic
+   Firestore collection: "AWS CSA Pro Practice Test"
+   ========================================================================== */
+
+/* --- Firebase config (sfcertification-grafana, same as SF Knowledge Hub) --- */
+const firebaseConfig = {
+  apiKey: "AIzaSyB-REPLACE-WITH-DEPLOYED-KEY",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.appspot.com",
+  messagingSenderId: "REPLACE_SENDER_ID",
+  appId: "REPLACE_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const COLLECTION = "AWS CSA Pro Practice Test";
+const QUESTIONS_PER_TEST = 25;
+const TEST_MINUTES = 45;
+
+/* --- State --- */
+const STATE = {
+  user: null,            // { email, name }
+  domain: null,          // domain object from bank
+  questions: [],         // 25 drawn question objects
+  answers: {},           // qid -> array of selected option indices
+  current: 0,            // index into questions
+  startedAt: null,       // Date
+  timerInterval: null,
+  remaining: TEST_MINUTES * 60,
+  submitted: false,
+  wrongHistory: {},      // qid -> [{attemptNumber, userAnswer}] from prior wrong answers
+  attemptNumber: 1,      // this attempt's number for the current user+domain
+  pendingDomainId: null  // domain chosen before auth completes
+};
+
+const BANK = window.SAP_C02_QUESTION_BANK;
+
+/* --- Helpers --- */
+function $(id){ return document.getElementById(id); }
+function show(viewId){
+  ['view-dashboard','view-test','view-results','view-loading'].forEach(v=>{
+    $(v).classList.toggle('hidden', v !== viewId);
+  });
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function letter(i){ return String.fromCharCode(65 + i); }
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function arraysEqualAsSets(a, b){
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort((x,y)=>x-y), sb = [...b].sort((x,y)=>x-y);
+  return sa.every((v,i)=>v===sb[i]);
+}
+
+/* --- Render dashboard cards --- */
+function renderCards(){
+  const wrap = $('domainCards');
+  wrap.innerHTML = '';
+  BANK.domains.forEach(d=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const topicsHtml = d.topics.slice(0,5).map(t=>`<li>${t}</li>`).join('');
+    card.innerHTML = `
+      <div>
+        <div class="dnum">${d.id.toUpperCase()} · ${d.questions.length} questions in pool</div>
+        <h3>${d.name}</h3>
+      </div>
+      <ul class="topics">${topicsHtml}</ul>
+      <div class="foot">
+        <span class="weight">~${d.weightPct}% of exam</span>
+        <span class="go">Start 25-question test →</span>
+      </div>`;
+    card.addEventListener('click', ()=> onDomainClick(d.id));
+    wrap.appendChild(card);
+  });
+}
+
+/* --- Domain click: require auth, then build test --- */
+function onDomainClick(domainId){
+  STATE.pendingDomainId = domainId;
+  if (STATE.user){
+    beginTestFlow(domainId);
+  } else {
+    openAuth();
+  }
+}
+
+/* --- Auth modal --- */
+function openAuth(){
+  $('authError').style.display = 'none';
+  $('authModal').classList.add('open');
+}
+function closeAuth(){ $('authModal').classList.remove('open'); }
+function authErr(msg){
+  const e = $('authError'); e.textContent = msg; e.style.display = 'block';
+}
+
+$('authClose').addEventListener('click', closeAuth);
+$('authModal').addEventListener('click', e=>{ if (e.target === $('authModal')) closeAuth(); });
+
+$('googleBtn').addEventListener('click', async ()=>{
+  const provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ hd: 'sourcefuse.com', prompt: 'select_account' });
+  try {
+    await auth.signInWithPopup(provider);
+  } catch (err){
+    authErr(friendlyAuthError(err));
+  }
+});
+
+$('emailBtn').addEventListener('click', emailSignIn);
+$('pwIn').addEventListener('keydown', e=>{ if (e.key === 'Enter') emailSignIn(); });
+async function emailSignIn(){
+  const email = $('emailIn').value.trim();
+  const pw = $('pwIn').value;
+  if (!email || !pw){ authErr('Enter both email and password.'); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+  } catch (err){
+    authErr(friendlyAuthError(err));
+  }
+}
+function friendlyAuthError(err){
+  const c = (err && err.code) || '';
+  if (c.includes('wrong-password') || c.includes('invalid-credential')) return 'Incorrect email or password.';
+  if (c.includes('user-not-found')) return 'No account found for that email.';
+  if (c.includes('popup-closed')) return 'Sign-in was cancelled.';
+  if (c.includes('network')) return 'Network error. Check your connection and try again.';
+  return (err && err.message) ? err.message : 'Sign-in failed. Please try again.';
+}
+
+$('signoutBtn').addEventListener('click', async ()=>{
+  await auth.signOut();
+  STATE.user = null;
+  show('view-dashboard');
+});
+
+/* --- Auth state listener: resolve email from token if needed --- */
+auth.onAuthStateChanged(async (user)=>{
+  if (user){
+    let email = user.email;
+    if (!email){
+      try {
+        const token = await user.getIdTokenResult();
+        email = token.claims.email || null;
+      } catch(e){ /* ignore */ }
+    }
+    STATE.user = { email: email || user.uid, name: user.displayName || (email ? email.split('@')[0] : 'Learner'), uid: user.uid };
+    $('userEmail').textContent = STATE.user.email;
+    $('userchip').style.display = 'flex';
+    closeAuth();
+    if (STATE.pendingDomainId){
+      const did = STATE.pendingDomainId;
+      STATE.pendingDomainId = null;
+      beginTestFlow(did);
+    }
+  } else {
+    STATE.user = null;
+    $('userchip').style.display = 'none';
+  }
+});
+
+/* --- Begin test: fetch prior attempts, then build the draw ---------------- *
+   Draw rules:
+   - Attempts 1 & 2: serve questions the user has NOT seen before (unique).
+     If fewer than 25 unseen remain, top up with already-seen questions.
+   - Attempt 3 onward: lead with every question the user previously answered
+     INCORRECTLY (deduplicated). If those are fewer than 25, intersperse with
+     random questions drawn from the rest of the pool, EXCLUDING the
+     incorrectly-answered set (top-ups may repeat correctly-seen questions).
+   - Each previously-incorrect question carries its wrong-answer history so the
+     test card can show "You answered this incorrectly in attempt N…".
+ * -------------------------------------------------------------------------- */
+async function beginTestFlow(domainId){
+  const domain = BANK.domains.find(d=>d.id === domainId);
+  if (!domain){ toast('Domain not found.'); return; }
+  STATE.domain = domain;
+  $('loadingText').textContent = 'Checking your previous attempts…';
+  show('view-loading');
+
+  const pool = domain.questions;
+  const seenIds = new Set();
+  // qid -> array of { attemptNumber, userAnswer:[idx], completedAt } for WRONG answers only
+  const wrongHistory = {};
+  let priorAttemptCount = 0;
+
+  try {
+    const snap = await db.collection(COLLECTION)
+      .where('email', '==', STATE.user.email)
+      .where('domainId', '==', domainId)
+      .get();
+
+    // Order attempts chronologically so attempt numbers are stable.
+    const attempts = [];
+    snap.forEach(doc=> attempts.push(doc.data()));
+    attempts.sort((a,b)=>{
+      const ta = a.completedAt ? Date.parse(a.completedAt) : 0;
+      const tb = b.completedAt ? Date.parse(b.completedAt) : 0;
+      return ta - tb;
+    });
+
+    priorAttemptCount = attempts.length;
+
+    attempts.forEach((data, ai)=>{
+      const attemptNumber = ai + 1;
+      (data.questions || []).forEach(q=>{
+        if (!q.id) return;
+        seenIds.add(q.id);
+        if (q.isCorrect === false){
+          if (!wrongHistory[q.id]) wrongHistory[q.id] = [];
+          wrongHistory[q.id].push({
+            attemptNumber: attemptNumber,
+            userAnswer: Array.isArray(q.userAnswer) ? q.userAnswer : [],
+            completedAt: data.completedAt || null
+          });
+        }
+      });
+    });
+  } catch (err){
+    console.warn('Could not load prior attempts:', err);
+    // Proceed without history rather than blocking the learner.
+  }
+
+  STATE.wrongHistory = wrongHistory;
+  STATE.attemptNumber = priorAttemptCount + 1;
+
+  const wrongIds = new Set(Object.keys(wrongHistory));
+  let drawn;
+
+  if (STATE.attemptNumber >= 3){
+    // --- Wrong-answers-first draw ---
+    const wrongQuestions = shuffle(pool.filter(q=> wrongIds.has(q.id)));
+
+    if (wrongQuestions.length >= QUESTIONS_PER_TEST){
+      drawn = wrongQuestions.slice(0, QUESTIONS_PER_TEST);
+    } else {
+      // Top up with random questions that are NOT in the wrong set.
+      const topUpCount = QUESTIONS_PER_TEST - wrongQuestions.length;
+      const topUpPool = shuffle(pool.filter(q=> !wrongIds.has(q.id)));
+      const topUp = topUpPool.slice(0, topUpCount);
+      // Interleave wrong questions with the random top-ups.
+      drawn = shuffle(wrongQuestions.concat(topUp));
+    }
+  } else {
+    // --- Attempts 1 & 2: prefer unseen, top up with seen if needed ---
+    const unseen = pool.filter(q=> !seenIds.has(q.id));
+    if (unseen.length >= QUESTIONS_PER_TEST){
+      drawn = shuffle(unseen).slice(0, QUESTIONS_PER_TEST);
+    } else if (unseen.length > 0){
+      const topUpCount = QUESTIONS_PER_TEST - unseen.length;
+      const seenPool = shuffle(pool.filter(q=> seenIds.has(q.id))).slice(0, topUpCount);
+      drawn = shuffle(unseen.concat(seenPool));
+    } else {
+      drawn = shuffle(pool).slice(0, QUESTIONS_PER_TEST);
+    }
+  }
+
+  STATE.questions = drawn;
+  STATE.answers = {};
+  STATE.current = 0;
+  STATE.submitted = false;
+  STATE.startedAt = new Date();
+  STATE.remaining = TEST_MINUTES * 60;
+
+  startTimer();
+  renderTest();
+  show('view-test');
+}
+
+/* --- Timer --- */
+function startTimer(){
+  clearInterval(STATE.timerInterval);
+  updateTimerDisplay();
+  STATE.timerInterval = setInterval(()=>{
+    STATE.remaining--;
+    updateTimerDisplay();
+    if (STATE.remaining <= 0){
+      clearInterval(STATE.timerInterval);
+      toast('Time is up — submitting your test.');
+      submitTest(true);
+    }
+  }, 1000);
+}
+function updateTimerDisplay(){
+  const m = Math.floor(STATE.remaining / 60);
+  const s = STATE.remaining % 60;
+  const el = $('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.classList.toggle('warn', STATE.remaining <= 300 && STATE.remaining > 60);
+  el.classList.toggle('crit', STATE.remaining <= 60);
+}
+
+/* --- Render current test question --- */
+/* --- Build the "previously answered incorrectly" banner for a question ---- *
+   Uses STATE.wrongHistory (qid -> [{attemptNumber, userAnswer}]). Cites the
+   most recent prior attempt in which the question was answered incorrectly.   */
+function buildPriorWrongBanner(q){
+  const hist = STATE.wrongHistory && STATE.wrongHistory[q.id];
+  if (!hist || !hist.length) return '';
+  // Most recent wrong attempt (highest attemptNumber).
+  const last = hist.slice().sort((a,b)=> b.attemptNumber - a.attemptNumber)[0];
+  const ans = Array.isArray(last.userAnswer) ? last.userAnswer : [];
+  let answerText;
+  if (!ans.length){
+    answerText = 'left unanswered';
+  } else {
+    answerText = ans
+      .slice().sort((x,y)=>x-y)
+      .map(i=>{
+        const optText = q.options[i] !== undefined ? q.options[i] : '(option no longer available)';
+        return `<b>${letter(i)}.</b> ${optText}`;
+      })
+      .join('<br>');
+  }
+  return `
+    <div class="prior-wrong">
+      <div class="pw-head">↻ You answered this incorrectly in attempt ${last.attemptNumber}.</div>
+      <div class="pw-body"><span class="pw-label">Your answer then:</span> ${answerText}</div>
+    </div>`;
+}
+
+function renderTest(){
+  const q = STATE.questions[STATE.current];
+  $('testEyebrow').textContent = STATE.domain.id.toUpperCase() + ' · 45-minute practice';
+  $('testTitle').textContent = STATE.domain.name;
+
+  const isMulti = q.type === 'multi';
+  const selected = STATE.answers[q.id] || [];
+  const diffClass = 'diff-' + q.difficulty;
+
+  const optsHtml = q.options.map((opt, i)=>{
+    const sel = selected.includes(i) ? 'selected' : '';
+    const kind = isMulti ? 'kind-multi' : 'kind-single';
+    const mark = selected.includes(i) ? (isMulti ? '✓' : '●') : '';
+    return `<div class="opt ${kind} ${sel}" data-i="${i}">
+        <div class="box">${mark}</div>
+        <div class="otext"><span class="oletter">${letter(i)}.</span>${opt}</div>
+      </div>`;
+  }).join('');
+
+  const priorWrongHtml = buildPriorWrongBanner(q);
+
+  $('qcard').innerHTML = `
+    <div class="qmeta">
+      <span class="qnum">Question ${STATE.current+1} of ${STATE.questions.length}</span>
+      <span class="chip topic">${q.topic}</span>
+      ${isMulti ? '<span class="chip multi">Select all that apply</span>' : ''}
+      <span class="chip ${diffClass}">${q.difficulty}</span>
+    </div>
+    <div class="qtext">${q.question}</div>
+    ${priorWrongHtml}
+    ${isMulti ? '<div class="qhint">More than one answer is correct. Select every option that applies.</div>' : ''}
+    <div class="opts" id="opts">${optsHtml}</div>
+  `;
+
+  document.querySelectorAll('#opts .opt').forEach(el=>{
+    el.addEventListener('click', ()=> selectOption(q, parseInt(el.dataset.i,10)));
+  });
+
+  // Nav buttons
+  $('prevBtn').disabled = STATE.current === 0;
+  const isLast = STATE.current === STATE.questions.length - 1;
+  $('nextBtn').style.display = isLast ? 'none' : 'inline-block';
+  $('submitBtn').style.display = isLast ? 'inline-block' : 'none';
+
+  renderProgress();
+  renderPalette();
+}
+
+function selectOption(q, i){
+  const isMulti = q.type === 'multi';
+  let sel = STATE.answers[q.id] ? STATE.answers[q.id].slice() : [];
+  if (isMulti){
+    if (sel.includes(i)) sel = sel.filter(x=>x!==i);
+    else sel.push(i);
+  } else {
+    sel = [i];
+  }
+  if (sel.length === 0) delete STATE.answers[q.id];
+  else STATE.answers[q.id] = sel;
+  renderTest();
+}
+
+function renderProgress(){
+  const answered = Object.keys(STATE.answers).length;
+  const total = STATE.questions.length;
+  $('progressFill').style.width = (answered/total*100) + '%';
+  $('progressLabel').textContent = `${answered} / ${total} answered`;
+}
+
+function renderPalette(){
+  const p = $('palette');
+  p.innerHTML = '';
+  STATE.questions.forEach((q, i)=>{
+    const b = document.createElement('button');
+    b.textContent = i+1;
+    if (STATE.answers[q.id]) b.classList.add('answered');
+    if (i === STATE.current) b.classList.add('current');
+    b.addEventListener('click', ()=>{ STATE.current = i; renderTest(); });
+    p.appendChild(b);
+  });
+}
+
+$('prevBtn').addEventListener('click', ()=>{
+  if (STATE.current > 0){ STATE.current--; renderTest(); }
+});
+$('nextBtn').addEventListener('click', ()=>{
+  if (STATE.current < STATE.questions.length - 1){ STATE.current++; renderTest(); }
+});
+$('submitBtn').addEventListener('click', ()=>{
+  const answered = Object.keys(STATE.answers).length;
+  const total = STATE.questions.length;
+  if (answered < total){
+    if (!confirm(`You have answered ${answered} of ${total} questions. Unanswered questions are marked incorrect. Submit anyway?`)) return;
+  }
+  submitTest(false);
+});
+
+/* --- Submit: grade, write to Firestore, show results --- */
+async function submitTest(auto){
+  if (STATE.submitted) return;
+  STATE.submitted = true;
+  clearInterval(STATE.timerInterval);
+
+  const endedAt = new Date();
+  const timeTakenSec = Math.min(TEST_MINUTES*60, Math.round((endedAt - STATE.startedAt)/1000));
+
+  // Grade
+  let correctCount = 0;
+  const recordedQuestions = STATE.questions.map((q, idx)=>{
+    const userAns = STATE.answers[q.id] || [];
+    const isCorrect = userAns.length > 0 && arraysEqualAsSets(userAns, q.answer);
+    if (isCorrect) correctCount++;
+    return {
+      id: q.id,
+      order: idx + 1,
+      question: q.question,
+      options: q.options,
+      type: q.type,
+      topic: q.topic,
+      difficulty: q.difficulty,
+      correctAnswer: q.answer,
+      userAnswer: userAns,
+      isCorrect: isCorrect,
+      explanation: q.explanation
+    };
+  });
+  const total = STATE.questions.length;
+  const scorePct = Math.round((correctCount/total)*100);
+
+  const record = {
+    email: STATE.user.email,
+    username: STATE.user.email,           // username = email, per spec
+    displayName: STATE.user.name,
+    uid: STATE.user.uid || null,
+    domainId: STATE.domain.id,
+    domain: STATE.domain.name,
+    attemptNumber: STATE.attemptNumber,
+    questions: recordedQuestions,
+    totalQuestions: total,
+    correctCount: correctCount,
+    wrongCount: total - correctCount,
+    scorePercent: scorePct,
+    passed: scorePct >= (BANK.meta.passThresholdPct || 75),
+    timeTakenSeconds: timeTakenSec,
+    timeTakenFormatted: formatDuration(timeTakenSec),
+    autoSubmitted: !!auto,
+    startedAt: STATE.startedAt.toISOString(),
+    completedAt: endedAt.toISOString(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  $('loadingText').textContent = 'Saving your results…';
+  show('view-loading');
+
+  try {
+    await db.collection(COLLECTION).add(record);
+  } catch (err){
+    console.error('Failed to save results:', err);
+    toast('Saved locally only — could not write to Firestore.');
+  }
+
+  renderResults(record);
+  show('view-results');
+}
+
+function formatDuration(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return `${m}m ${String(s).padStart(2,'0')}s`;
+}
+
+/* --- Results view --- */
+function renderResults(record){
+  const passThreshold = BANK.meta.passThresholdPct || 75;
+  const passed = record.scorePercent >= passThreshold;
+  const circ = 2 * Math.PI * 58; // r=58
+  const offset = circ * (1 - record.scorePercent/100);
+  const ringColor = passed ? 'var(--green)' : 'var(--red)';
+
+  const v = $('view-results');
+  v.innerHTML = `
+    <div class="view-intro">
+      <div class="eyebrow">${record.domain}</div>
+      <h2>Your results</h2>
+    </div>
+
+    <div class="score-hero">
+      <div class="ring">
+        <svg width="132" height="132">
+          <circle cx="66" cy="66" r="58" fill="none" stroke="var(--line)" stroke-width="12"/>
+          <circle cx="66" cy="66" r="58" fill="none" stroke="${ringColor}" stroke-width="12"
+            stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="rcenter">
+          <div class="pct">${record.scorePercent}%</div>
+          <div class="lab">Score</div>
+        </div>
+      </div>
+      <div class="score-meta">
+        <h2>${record.displayName ? record.displayName + ', here\u2019s how you did' : 'Here\u2019s how you did'}</h2>
+        <span class="verdict ${passed?'pass':'fail'}">${passed ? 'Passed' : 'Below pass mark'} · ${passThreshold}% to pass</span>
+        <div class="stat-grid">
+          <div class="stat correct"><div class="v">${record.correctCount}</div><div class="l">Correct</div></div>
+          <div class="stat wrong"><div class="v">${record.wrongCount}</div><div class="l">Wrong</div></div>
+          <div class="stat"><div class="v">${record.totalQuestions}</div><div class="l">Questions</div></div>
+          <div class="stat"><div class="v">${record.timeTakenFormatted}</div><div class="l">Time taken</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-head">
+      <h3>Review answers</h3>
+      <div class="filter-tabs" id="filterTabs">
+        <button data-f="all" class="active">All (${record.totalQuestions})</button>
+        <button data-f="wrong">Wrong (${record.wrongCount})</button>
+        <button data-f="correct">Correct (${record.correctCount})</button>
+      </div>
+    </div>
+    <div id="reviewList"></div>
+
+    <div class="nav-row" style="margin-top:28px;">
+      <div class="left">
+        <button class="btn btn-ghost" id="backDashBtn">← Back to dashboard</button>
+      </div>
+      <div class="right">
+        <button class="btn btn-primary" id="retryBtn">Try this domain again</button>
+      </div>
+    </div>
+  `;
+
+  let activeFilter = 'all';
+  function renderList(){
+    const list = $('reviewList');
+    list.innerHTML = '';
+    record.questions.forEach((q)=>{
+      if (activeFilter === 'wrong' && q.isCorrect) return;
+      if (activeFilter === 'correct' && !q.isCorrect) return;
+      const optsHtml = q.options.map((opt, i)=>{
+        const isCorrectOpt = q.correctAnswer.includes(i);
+        const isPicked = q.userAnswer.includes(i);
+        let cls = 'neutral', tag = '';
+        if (isCorrectOpt){ cls = 'correct'; tag = '<span class="tag">Correct</span>'; }
+        if (isPicked && !isCorrectOpt){ cls = 'picked-wrong'; tag = '<span class="tag">Your pick</span>'; }
+        if (isPicked && isCorrectOpt){ tag = '<span class="tag">Correct · your pick</span>'; }
+        return `<div class="ropt ${cls}">
+            <span class="tag-wrap">${tag}</span>
+            <span><span class="oletter">${letter(i)}.</span>${opt}</span>
+          </div>`;
+      }).join('');
+      const item = document.createElement('div');
+      item.className = 'ritem ' + (q.isCorrect ? 'correct' : 'wrong');
+      item.innerHTML = `
+        <div class="rtop">
+          <span class="rnum">Q${q.order}</span>
+          <span class="rstatus ${q.isCorrect?'correct':'wrong'}">${q.isCorrect?'Correct':'Incorrect'}</span>
+          <span class="chip topic">${q.topic}</span>
+          ${q.type==='multi'?'<span class="chip multi">Multi-select</span>':''}
+        </div>
+        <div class="rq">${q.question}</div>
+        ${optsHtml}
+        <div class="explain"><b>Why:</b> ${q.explanation}</div>
+      `;
+      list.appendChild(item);
+    });
+    if (!list.children.length){
+      list.innerHTML = '<div class="note"><span>✓</span><div>No questions in this filter.</div></div>';
+    }
+  }
+  renderList();
+
+  $('filterTabs').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if (!b) return;
+    activeFilter = b.dataset.f;
+    [...$('filterTabs').children].forEach(c=>c.classList.toggle('active', c===b));
+    renderList();
+  });
+  $('backDashBtn').addEventListener('click', ()=> show('view-dashboard'));
+  $('retryBtn').addEventListener('click', ()=> beginTestFlow(record.domainId));
+}
+
+/* --- Guard against accidental navigation during a test --- */
+window.addEventListener('beforeunload', (e)=>{
+  if (!STATE.submitted && STATE.questions.length && document.getElementById('view-test').classList.contains('hidden') === false){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+/* --- Init --- */
+renderCards();
+show('view-dashboard');
+</script>
+</body>
+</html>
